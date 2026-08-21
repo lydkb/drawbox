@@ -1,5 +1,6 @@
-const GOOGLE_FORM_ID = "1FAIpQLSer07GoDctcl7Y4Kp4H-mFe6AJvh4yG-_ywXzySv_Up2siKeg";
-const ENTRY_ID = "entry.1218245555";
+const GOOGLE_FORM_ID = "1FAIpQLSeX9Om6Wpaxin9X2MrWX_q336mqdYN9py0IhMzccI-ORbUvnA
+";
+const ENTRY_ID = "entry.927975880";
 const GOOGLE_SHEET_ID = "1h9xmNff5B318N9-5XR2YbQV0VGBgp5OqPvxjnG-mPVc";
 const DISPLAY_IMAGES = true; 
 
@@ -10,7 +11,7 @@ const GOOGLE_FORM_URL = `https://docs.google.com/forms/d/e/${GOOGLE_FORM_ID}/for
 let canvas = document.getElementById("drawboxcanvas");
 let context = canvas.getContext("2d");
 
-context.fillStyle = "white";        
+context.fillStyle = "white";        // canvas background
 context.fillRect(0, 0, canvas.width, canvas.height);
 
 let restore_array = [];
@@ -40,13 +41,6 @@ function draw(event) {
 
   event.preventDefault();
 }
-document.getElementById("brushSize").addEventListener("input", function () {
-  stroke_width = this.value;
-});
-
-document.getElementById("colorPicker").addEventListener("input", function () {
-  stroke_color = this.value;
-});
 
 function stop(event) {
   if (!is_drawing) return;
@@ -62,13 +56,15 @@ function stop(event) {
 }
 
 function getX(event) {
-  const rect = canvas.getBoundingClientRect();
-  return (event.clientX || event.touches[0].clientX) - rect.left;
+  return event.pageX
+    ? event.pageX - canvas.offsetLeft
+    : event.targetTouches[0].pageX - canvas.offsetLeft;
 }
 
 function getY(event) {
-  const rect = canvas.getBoundingClientRect();
-  return (event.clientY || event.touches[0].clientY) - rect.top;
+  return event.pageY
+    ? event.pageY - canvas.offsetTop
+    : event.targetTouches[0].pageY - canvas.offsetTop;
 }
 
 canvas.addEventListener("mousedown", start);
@@ -80,7 +76,8 @@ canvas.addEventListener("touchstart", start);
 canvas.addEventListener("touchmove", draw);
 canvas.addEventListener("touchend", stop);
 
-window.Restore = function() {
+
+function Restore() {
   if (start_index <= 0) {
     Clear();
   } else {
@@ -90,7 +87,7 @@ window.Restore = function() {
   }
 }
 
-window.Clear = function() {
+function Clear() {
   context.fillStyle = "white";
   context.clearRect(0, 0, canvas.width, canvas.height);
   context.fillRect(0, 0, canvas.width, canvas.height);
@@ -98,6 +95,10 @@ window.Clear = function() {
   restore_array = [];
   start_index = -1;
 }
+
+document.getElementById("undoBtn").addEventListener("click", Restore);
+document.getElementById("clearBtn").addEventListener("click", Clear);
+
 
 document.getElementById("submit").addEventListener("click", async function () {
   const submitButton = document.getElementById("submit");
@@ -107,16 +108,16 @@ document.getElementById("submit").addEventListener("click", async function () {
   statusText.textContent = "Uploading...";
 
   const imageData = canvas.toDataURL("image/png");
+  const blob = await (await fetch(imageData)).blob();
 
-  const imgurFormData = new FormData();
-  imgurFormData.append("image", imageData.split(',')[1]);
-  imgurFormData.append("type", "base64");
+  const formData = new FormData();
+  formData.append("image", blob, "drawing.png");
 
   try {
     const response = await fetch("https://api.imgur.com/3/image", {
       method: "POST",
       headers: { Authorization: `Client-ID ${CLIENT_ID}` },
-      body: imgurFormData, 
+      body: formData,
     });
 
     const data = await response.json();
@@ -130,7 +131,7 @@ document.getElementById("submit").addEventListener("click", async function () {
     await fetch(GOOGLE_FORM_URL, {
       method: "POST",
       body: googleFormData,
-      mode: "no-cors", 
+      mode: "no-cors",
     });
 
     statusText.textContent = "Upload successful!";
@@ -140,12 +141,11 @@ document.getElementById("submit").addEventListener("click", async function () {
   } catch (error) {
     console.error(error);
     statusText.textContent = "Error uploading.";
-    alert("Upload failed. Check your browser console for details.");
+    alert("Upload failed.");
   } finally {
     submitButton.disabled = false;
   }
 });
-
 
 async function fetchImages() {
   if (!DISPLAY_IMAGES) return;
