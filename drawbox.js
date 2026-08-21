@@ -148,14 +148,16 @@ async function fetchImages() {
   try {
     const response = await fetch(GOOGLE_SHEET_URL);
     const csvText = await response.text();
+    
     const rows = csvText.split("\n").slice(1);
     const gallery = document.getElementById("gallery");
     gallery.innerHTML = "";
 
     rows.reverse().forEach((row) => {
-      const columns = row.split(",");
+      const columns = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
       if (columns.length < 2) return;
-      const timestamp = columns[0].trim();
+      
+      const timestamp = columns[0].trim().replace(/"/g, "");
       const imgUrl = columns[1].trim().replace(/"/g, "");
 
       if (imgUrl.startsWith("http")) {
@@ -170,5 +172,4 @@ async function fetchImages() {
     document.getElementById("gallery").textContent = "Failed to load images.";
   }
 }
-
 fetchImages();
