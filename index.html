@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LydKB [links]</title>
+<link rel="shortcut icon" href="https://i.imgur.com/eIKac7n.gif"> 
+  <link rel="stylesheet" href="https://cdn.cursors-4u.net/cursors/animated/cute-ears-doll-girl-9aaba74d-32.css">
+<link rel="preconnect" href="https://fonts.cdnfonts.com">
+<link href="https://fonts.cdnfonts.com/css/pixel" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body class="iframe-body">
+    
+ <div style="text-align:center; font-weight:normal; background:#FFEBF1; padding:6px; border-radius:4px;">
+    <s>&#9825; !! drawbox // please keep it family friendly !! &#9825;</s> 
+  </div>
+    
+    
+    <div class="box-window drawbox-wrapper" >
+
+  <div class="paint-titlebar">
+    <span class="title-text">
+      <img src="https://lydkb.neocities.org/images/lkbgal.gif">
+      Drawbox
+    </span>
+  </div>
+
+  <div class="drawbox-tools">
+    <label>Brush Size</label>
+    <input type="range" id="brushSize" min="1" max="40">
+
+    <label>Colour</label>
+    <input type="color" id="colorPicker" value="#5D536B">
+
+    <button onclick="Restore()">Undo</button>
+    <button onclick="Clear()">Clear</button>
+    <button id="submit">Submit</button>
+    <span id="status"></span>
+  </div>
+
+  <div class="drawbox-canvas-frame">
+    <canvas id="drawboxcanvas" width="400" height="400"></canvas>
+  </div>
+
+  <div id="gallery" class="drawbox-gallery">Loading images...</div>
+
+</div>
+
+    
+    
+</body>
+    <script src="drawbox.js" defer></script>
+    <script src="heartsw.js"></script>
+</html>
