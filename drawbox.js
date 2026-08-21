@@ -11,7 +11,7 @@ const GOOGLE_FORM_URL = `https://docs.google.com/forms/d/e/${GOOGLE_FORM_ID}/for
 let canvas = document.getElementById("drawboxcanvas");
 let context = canvas.getContext("2d");
 
-context.fillStyle = "white";        // canvas background
+context.fillStyle = "white";      
 context.fillRect(0, 0, canvas.width, canvas.height);
 
 let restore_array = [];
