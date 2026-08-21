@@ -1,6 +1,5 @@
-const GOOGLE_FORM_ID = "1FAIpQLSeX9Om6Wpaxin9X2MrWX_q336mqdYN9py0IhMzccI-ORbUvnA
-";
-const ENTRY_ID = "entry.927975880";
+const GOOGLE_FORM_ID = "1FAIpQLSer07GoDctcl7Y4Kp4H-mFe6AJvh4yG-_ywXzySv_Up2siKeg";
+const ENTRY_ID = "entry.1218245555";
 const GOOGLE_SHEET_ID = "1h9xmNff5B318N9-5XR2YbQV0VGBgp5OqPvxjnG-mPVc";
 const DISPLAY_IMAGES = true; 
 
@@ -11,7 +10,7 @@ const GOOGLE_FORM_URL = `https://docs.google.com/forms/d/e/${GOOGLE_FORM_ID}/for
 let canvas = document.getElementById("drawboxcanvas");
 let context = canvas.getContext("2d");
 
-context.fillStyle = "white";      
+context.fillStyle = "white";        
 context.fillRect(0, 0, canvas.width, canvas.height);
 
 let restore_array = [];
@@ -41,6 +40,13 @@ function draw(event) {
 
   event.preventDefault();
 }
+document.getElementById("brushSize").addEventListener("input", function () {
+  stroke_width = this.value;
+});
+
+document.getElementById("colorPicker").addEventListener("input", function () {
+  stroke_color = this.value;
+});
 
 function stop(event) {
   if (!is_drawing) return;
@@ -56,15 +62,13 @@ function stop(event) {
 }
 
 function getX(event) {
-  return event.pageX
-    ? event.pageX - canvas.offsetLeft
-    : event.targetTouches[0].pageX - canvas.offsetLeft;
+  const rect = canvas.getBoundingClientRect();
+  return (event.clientX || event.touches[0].clientX) - rect.left;
 }
 
 function getY(event) {
-  return event.pageY
-    ? event.pageY - canvas.offsetTop
-    : event.targetTouches[0].pageY - canvas.offsetTop;
+  const rect = canvas.getBoundingClientRect();
+  return (event.clientY || event.touches[0].clientY) - rect.top;
 }
 
 canvas.addEventListener("mousedown", start);
@@ -102,17 +106,17 @@ document.getElementById("submit").addEventListener("click", async function () {
   submitButton.disabled = true;
   statusText.textContent = "Uploading...";
 
-  const imageData = canvas.toDataURL("image/png");
-  const blob = await (await fetch(imageData)).blob();
+  const imageData = canvas.toDataURL("image/png").split(',')[1];
 
-  const formData = new FormData();
-  formData.append("image", blob, "drawing.png");
+  const imgurFormData = new FormData();
+  imgurFormData.append("image", imageData);
+  imgurFormData.append("type", "base64");
 
   try {
     const response = await fetch("https://api.imgur.com/3/image", {
       method: "POST",
       headers: { Authorization: `Client-ID ${CLIENT_ID}` },
-      body: formData,
+      body: imgurFormData, 
     });
 
     const data = await response.json();
@@ -120,13 +124,14 @@ document.getElementById("submit").addEventListener("click", async function () {
 
     const imageUrl = data.data.link;
 
+
     const googleFormData = new FormData();
     googleFormData.append(ENTRY_ID, imageUrl);
 
     await fetch(GOOGLE_FORM_URL, {
       method: "POST",
       body: googleFormData,
-      mode: "no-cors",
+      mode: "no-cors", 
     });
 
     statusText.textContent = "Upload successful!";
@@ -136,11 +141,12 @@ document.getElementById("submit").addEventListener("click", async function () {
   } catch (error) {
     console.error(error);
     statusText.textContent = "Error uploading.";
-    alert("Upload failed.");
+    alert("Upload failed. Check your browser console for details.");
   } finally {
     submitButton.disabled = false;
   }
 });
+
 
 async function fetchImages() {
   if (!DISPLAY_IMAGES) return;
