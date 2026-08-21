@@ -3,25 +3,31 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' data: blob: https://api.imgur.com https://docs.google.com https://forms.gle https://*.google.com; style-src 'self' 'unsafe-inline' https://cdn.cursors-4u.net https://fonts.cdnfonts.com; font-src 'self' https://fonts.cdnfonts.com; img-src 'self' data: https://i.imgur.com https://api.imgur.com https://cdn.cursors-4u.net https://lydkb.neocities.org;">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' data: blob: https://imgur.com https://google.com https://forms.gle https://*.google.com; style-src 'self' 'unsafe-inline' https://cursors-4u.net https://cdnfonts.com; font-src 'self' https://cdnfonts.com; img-src 'self' data: https://imgur.com https://imgur.com https://cursors-4u.net https://neocities.org;">
 <title>LydKB [drawbox]</title>
-<link rel="shortcut icon" href="https://i.imgur.com/eIKac7n.gif"> 
-<link rel="stylesheet" href="https://cdn.cursors-4u.net/cursors/animated/cute-ears-doll-girl-9aaba74d-32.css">
-<link rel="preconnect" href="https://fonts.cdnfonts.com">
-<link href="https://fonts.cdnfonts.com/css/pixel" rel="stylesheet">
+<link rel="shortcut icon" href="https://imgur.com/eIKac7n.gif"> 
+<link rel="stylesheet" href="https://cursors-4u.net/cursors/animated/cute-ears-doll-girl-9aaba74d-32.css">
+<link rel="preconnect" href="https://cdnfonts.com">
+<link href="https://cdnfonts.com/css/pixel" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 </head>
 <body class="iframe-body">
     
  <div style="text-align:center; font-weight:normal; background:#FFEBF1; padding:6px; border-radius:4px;">
     <s>♡ !! drawbox // please keep it family friendly !! ♡</s> 
-  </div>
+ </div>
     
-  <div class="box-window drawbox-wrapper">
+ <div class="box-window drawbox-wrapper">
+  <div class="paint-titlebar">
+    <span class="title-text">
+      <img src="https://neocities.org/images/lkbdraw.gif">
+      Drawbox
+    </span>
+  </div>
 
   <div class="drawbox-tools">
     <label>Brush Size</label>
-    <input type="range" id="brushSize" min="1" max="40">
+    <input type="range" id="brushSize" min="1" max="40" value="4">
 
     <label>Colour</label>
     <input type="color" id="colorPicker" value="#5D536B">
@@ -37,8 +43,7 @@
   </div>
 
   <div id="gallery" class="drawbox-gallery">Loading images...</div>
-
-</div>
+ </div>
 
 </body>
 <script src="drawbox.js" defer></script>
