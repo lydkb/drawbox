@@ -80,7 +80,7 @@ canvas.addEventListener("touchstart", start);
 canvas.addEventListener("touchmove", draw);
 canvas.addEventListener("touchend", stop);
 
-function Restore() {
+window.Restore = function() {
   if (start_index <= 0) {
     Clear();
   } else {
@@ -90,7 +90,7 @@ function Restore() {
   }
 }
 
-function Clear() {
+window.Clear = function() {
   context.fillStyle = "white";
   context.clearRect(0, 0, canvas.width, canvas.height);
   context.fillRect(0, 0, canvas.width, canvas.height);
@@ -106,10 +106,10 @@ document.getElementById("submit").addEventListener("click", async function () {
   submitButton.disabled = true;
   statusText.textContent = "Uploading...";
 
-  const imageData = canvas.toDataURL("image/png").split(',')[1];
+  const imageData = canvas.toDataURL("image/png");
 
   const imgurFormData = new FormData();
-  imgurFormData.append("image", imageData);
+  imgurFormData.append("image", imageData.split(',')[1]);
   imgurFormData.append("type", "base64");
 
   try {
@@ -123,7 +123,6 @@ document.getElementById("submit").addEventListener("click", async function () {
     if (!data.success) throw new Error("Imgur upload failed");
 
     const imageUrl = data.data.link;
-
 
     const googleFormData = new FormData();
     googleFormData.append(ENTRY_ID, imageUrl);
