@@ -182,13 +182,28 @@ s { color: #FFB8DD; text-decoration: none; }
   height: 6px;
   border-radius: 4px;
 }
+
 .color-picker {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
+  position: relative;
+}
+
+.color-picker-popup {
+  position: absolute;
+  z-index: 10;
+  top: calc(100% + 6px);
+  left: 0;
+  padding: 8px;
+  background: #fff;
+  border: 1px solid #FFD1E6;
+  box-shadow: 2px 2px 4px #AFA3C0;
+}
+
+.color-picker-popup[hidden] {
+  display: none;
 }
 
 #colorArea {
+  display: block;
   width: 180px;
   height: 120px;
   border: 1px dotted #AFA3C0;
@@ -196,8 +211,11 @@ s { color: #FFB8DD; text-decoration: none; }
 }
 
 #huePicker {
+  display: block;
   width: 180px;
+  margin-top: 6px;
 }
+
 .drawbox-canvas-frame {
   width: min(400px, 100%);
   box-sizing: border-box;
