@@ -29,8 +29,10 @@ font-src 'self' https://cdnfonts.com https://fonts.cdnfonts.com;">
     <input type="range" id="brushSize" min="1" max="40">
 
     <label>Colour</label>
-    <input type="color" id="colorPicker" value="#5D536B">
-
+   <div class="color-picker">
+  <canvas id="colorArea" width="180" height="120"></canvas>
+  <input id="huePicker" type="range" min="0" max="360" value="330">
+</div>
     <button id="undoBtn">Undo</button>
     <button id="clearBtn">Clear</button>
     <button id="submit">Submit</button>
