@@ -106,57 +106,64 @@ document.getElementById("undoBtn").addEventListener("click", Restore);
 document.getElementById("clearBtn").addEventListener("click", Clear);
 
 
-document.getElementById("submit").addEventListener("click", async function () {
+document.getElementById("submit").addEventListener("click", function () {
   const submitButton = document.getElementById("submit");
   const statusText = document.getElementById("status");
 
   submitButton.disabled = true;
   statusText.textContent = "Uploading...";
 
- const imageData = canvas.toDataURL("image/png");
- const blob = await (await fetch(imageData)).blob();
+  canvas.toBlob(async function (blob) {
+    if (!blob) {
+      statusText.textContent = "Error converting drawing.";
+      submitButton.disabled = false;
+      return;
+    }
 
+    const formData = new FormData();
+    formData.append("image", blob, "drawing.png");
 
-  const formData = new FormData();
-  formData.append("image", blob, "drawing.png");
+    try {
+      const response = await fetch("https://api.imgur.com/3/image", {
+        method: "POST",
+        headers: { Authorization: `Client-ID ${CLIENT_ID}` },
+        body: formData,
+      });
 
-  try {
-    const response = await fetch("https://api.imgur.com/3/image", {
-      method: "POST",
-      headers: {
-      Authorization: `Client-ID ${CLIENT_ID}`,
-      Accept: "application/json"
-    },
+      if (!response.ok) {
+        throw new Error(`Imgur Server Error: ${response.status}`);
+      }
 
-      body: formData,
-    });
+      const data = await response.json();
+      if (!data.success) {
+        throw new Error("Imgur API failed to return success.");
+      }
 
-    const data = await response.json();
-    if (!data.success) throw new Error("Imgur upload failed");
+      const imageUrl = data.data.link;
 
-    const imageUrl = data.data.link;
+      const googleFormData = new FormData();
+      googleFormData.append(ENTRY_ID, imageUrl);
 
-    const googleFormData = new FormData();
-    googleFormData.append(ENTRY_ID, imageUrl);
+      await fetch(GOOGLE_FORM_URL, {
+        method: "POST",
+        body: googleFormData,
+        mode: "no-cors", 
+      });
 
-    await fetch(GOOGLE_FORM_URL, {
-      method: "POST",
-      body: googleFormData,
-      mode: "no-cors",
-    });
+      statusText.textContent = "Upload successful!";
+      alert("Image uploaded successfully!");
+      location.reload();
 
-    statusText.textContent = "Upload successful!";
-    alert("Image uploaded!");
-    location.reload();
-
-  } catch (error) {
-    console.error(error);
-    statusText.textContent = "Error uploading.";
-    alert("Upload failed.");
-  } finally {
-    submitButton.disabled = false;
-  }
+    } catch (error) {
+      console.error("Upload process crashed:", error);
+      statusText.textContent = `Error: ${error.message}`;
+      alert(`Upload failed: ${error.message}`);
+    } finally {
+      submitButton.disabled = false;
+    }
+  }, "image/png");
 });
+
 
 async function fetchImages() {
   if (!DISPLAY_IMAGES) return;
