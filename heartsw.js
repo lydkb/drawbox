@@ -86,8 +86,9 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 })();
 window.addEventListener('load', function() {
-  const loader = document.getElementById('site-loader');
-  setTimeout(() => {
-    loader.classList.add('fade-out');
-  }, 666); 
+const loader = document.getElementById("site-loader");
+
+if (loader) {
+  setTimeout(() => loader.classList.add("fade-out"), 666);
+}
 });
