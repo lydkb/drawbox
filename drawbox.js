@@ -120,16 +120,26 @@ document.getElementById("submit").addEventListener("click", async function () {
   formData.append("image", blob, "drawing.png");
 
   try {
+    // ...existing code...
+
     const response = await fetch("https://api.imgur.com/3/image", {
       method: "POST",
-      headers: { Authorization: `Client-ID ${CLIENT_ID}` },
-      body: formData,
+      headers: {
+        Authorization: `Client-ID ${CLIENT_ID}`,
+        Accept: "application/json"
+      },
+      body: formData
     });
 
     const data = await response.json();
-    if (!data.success) throw new Error("Imgur upload failed");
+
+    if (!response.ok || !data.success) {
+      console.error("Imgur response:", data);
+      throw new Error(data?.data?.error || "Imgur upload failed");
+    }
 
     const imageUrl = data.data.link;
+    console.log("Uploaded image:", imageUrl);
 
     const googleFormData = new FormData();
     googleFormData.append(ENTRY_ID, imageUrl);
@@ -137,13 +147,14 @@ document.getElementById("submit").addEventListener("click", async function () {
     await fetch(GOOGLE_FORM_URL, {
       method: "POST",
       body: googleFormData,
-      mode: "no-cors",
+      mode: "no-cors"
     });
 
     statusText.textContent = "Upload successful!";
     alert("Image uploaded!");
     location.reload();
 
+// ...existing code...=
   } catch (error) {
     console.error(error);
     statusText.textContent = "Error uploading.";
