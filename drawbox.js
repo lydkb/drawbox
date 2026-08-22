@@ -22,6 +22,12 @@ let is_drawing = false;
 
 
 function start(event) {
+  if (pickingCanvasColor) {
+    pickColorFromCanvas(event);
+    event.preventDefault();
+    return;
+  }
+
   is_drawing = true;
   context.beginPath();
   context.moveTo(getX(event), getY(event));
@@ -135,6 +141,33 @@ colorPickerPopup.addEventListener("click", (event) => {
 document.addEventListener("click", () => {
   colorPickerPopup.hidden = true;
 });
+const pickCanvasColor = document.getElementById("pickCanvasColor");
+let pickingCanvasColor = false;
+
+pickCanvasColor.addEventListener("click", (event) => {
+  event.stopPropagation();
+  pickingCanvasColor = true;
+  colorPickerPopup.hidden = true;
+  document.getElementById("status").textContent =
+    "Click a colour on your drawing.";
+});
+
+function rgbToHex(red, green, blue) {
+  return "#" + [red, green, blue]
+    .map(value => value.toString(16).padStart(2, "0"))
+    .join("");
+}
+
+function pickColorFromCanvas(event) {
+  const x = Math.floor(getX(event));
+  const y = Math.floor(getY(event));
+  const pixel = context.getImageData(x, y, 1, 1).data;
+
+  stroke_color = rgbToHex(pixel[0], pixel[1], pixel[2]);
+  colorPickerButton.style.backgroundColor = stroke_color;
+  document.getElementById("status").textContent = "";
+  pickingCanvasColor = false;
+}
 drawColorArea();
 
 function stop(event) {
