@@ -5,10 +5,11 @@
 <meta http-equiv="Content-Security-Policy"
 content="
 default-src 'self';
-connect-src 'self' https://api.imgur.com https://i.imgur.com https://imgur.com https://docs.google.com https://*.google.com https://*.googleusercontent.com https://fonts.cdnfonts.com;
+connect-src 'self' https://api.imgur.com https://i.imgur.com https://imgur.com https://docs.google.com https://*.google.com https://*.googleusercontent.com;
+frame-src 'self' https://docs.google.com;
+form-action 'self' https://docs.google.com;
 img-src 'self' data: https://i.imgur.com https://imgur.com https://neocities.org https://*.googleusercontent.com;
 style-src 'self' 'unsafe-inline' https://cursors-4u.net https://cdn.cursors-4u.net https://cdnfonts.com https://fonts.cdnfonts.com;
-style-src-elem 'self' 'unsafe-inline' https://cursors-4u.net https://cdn.cursors-4u.net https://cdnfonts.com https://fonts.cdnfonts.com;
 font-src 'self' https://cdnfonts.com https://fonts.cdnfonts.com;
 ">
 <meta name="viewport" content="width=device-width, initial-scale=1">
