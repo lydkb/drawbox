@@ -142,6 +142,7 @@ document.getElementById("submit").addEventListener("click", async function () {
     submitButton.disabled = false;
   }
 });
+
 async function fetchImages() {
   if (!DISPLAY_IMAGES) return;
   try {
