@@ -32,9 +32,10 @@ body {
   border-radius: 5px;
 }
 
-.drawbox-gallery {
-  scrollbar-width: thin;
-  scrollbar-color: #fea9d1 transparent;
+
+.drawbox-wrapper {
+  padding: 10px;
+  background: #FFF;
 }
 
 .drawbox-tools {
@@ -50,10 +51,7 @@ body {
   flex-wrap: wrap;
 }
 
-.drawbox-tools label {
-  color: #5D536B;
-}
-
+.drawbox-tools input[type="range"],
 .drawbox-tools input[type="color"] {
   border: 1px dotted #AFA3C0;
   background: #F2E6FF;
@@ -72,15 +70,32 @@ body {
   font-size: 10px;
   padding: 4px 20px;
   min-width: 50px;
-  cursor: pointer;
 }
 
 .drawbox-tools button:hover {
   background: #FFD1E6;
 }
 
-.drawbox-tools button:active {
-  box-shadow: inset 1px 1px 1px #AFA3C0;
+.drawbox-canvas-frame {
+  border: 2px dotted #F2E6FF;
+  padding: 10px;
+  background: #FFF;
+  border-radius: 4px;
+  width: fit-content;
+  margin: 0 auto;
+  margin-bottom: 20px;
+}
+.drawbox-canvas-frame,
+#drawboxcanvas {
+  pointer-events: auto !important;
+}
+
+.drawbox-gallery {
+  background: #F2E6FF;
+  border: 1px solid #FFD1E6;
+  padding: 10px;
+  border-radius: 4px;
+  box-shadow: inset 1px 1px 0 #FFF;
 }
 
 .drawbox-tools input[type="range"] {
@@ -115,42 +130,12 @@ body {
   box-shadow: inset 1px 1px 0 #FFF;
   cursor: pointer;
 }
-
 .drawbox-tools input[type="range"]::-moz-range-track {
   background: #F2E6FF;
   border: 1px dotted #AFA3C0;
   height: 6px;
   border-radius: 4px;
 }
-
-.drawbox-canvas-frame {
-  border: 2px dotted #F2E6FF;
-  padding: 10px;
-  background: #FFF;
-  border-radius: 4px;
-  width: fit-content;
-  margin: 0 auto;
-  margin-bottom: 20px;
-}
-
-.drawbox-canvas-frame,
-#drawboxcanvas {
-  pointer-events: auto !important;
-}
-
-#drawboxcanvas {
-  display: block;
-  background: #FFFFFF;
-}
-
-.drawbox-gallery {
-  background: #F2E6FF;
-  border: 1px solid #FFD1E6;
-  padding: 10px;
-  border-radius: 4px;
-  box-shadow: inset 1px 1px 0 #FFF;
-}
-
 .gallery {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(120px, 120px));
