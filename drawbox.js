@@ -109,12 +109,14 @@ function stop(event) {
 
 function getX(event) {
   const rect = canvas.getBoundingClientRect();
-  return (event.clientX || (event.touches && event.touches[0] ? event.touches[0].clientX : 0)) - rect.left;
+  const clientX = event.clientX ?? event.touches?.[0]?.clientX ?? 0;
+  return (clientX - rect.left) * (canvas.width / rect.width);
 }
 
 function getY(event) {
   const rect = canvas.getBoundingClientRect();
-  return (event.clientY || (event.touches && event.touches[0] ? event.touches[0].clientY : 0)) - rect.top;
+  const clientY = event.clientY ?? event.touches?.[0]?.clientY ?? 0;
+  return (clientY - rect.top) * (canvas.height / rect.height);
 }
 
 canvas.addEventListener("mousedown", start);
