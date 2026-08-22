@@ -145,13 +145,15 @@ document.addEventListener("click", () => {
 const pickCanvasColor = document.getElementById("pickCanvasColor");
 let pickingCanvasColor = false;
 
-pickCanvasColor.addEventListener("click", (event) => {
-  event.stopPropagation();
-  pickingCanvasColor = true;
-  colorPickerPopup.hidden = true;
-  document.getElementById("status").textContent =
-    "Click a colour on your drawing.";
-});
+if (pickCanvasColor) {
+  pickCanvasColor.addEventListener("click", (event) => {
+    event.stopPropagation();
+    pickingCanvasColor = true;
+    colorPickerPopup.hidden = true;
+    document.getElementById("status").textContent =
+      "Click a colour on your drawing.";
+  });
+}
 
 function rgbToHex(red, green, blue) {
   return "#" + [red, green, blue]
