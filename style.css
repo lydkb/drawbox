@@ -111,26 +111,41 @@ s { color: #FFB8DD; text-decoration: none; }
   padding: 10px;
   border-radius: 4px;
   box-shadow: inset 1px 1px 0 #FFF;
+
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 10px;
+  overflow-x: auto;
+  white-space: nowrap;
 }
 
 .image-container {
+  flex: 0 0 auto;
+  width: 100px;
+  height: 100px;
   background: #FFF;
   border: 1px dotted #FFD1E6;
-  padding: 5px;
-  margin-bottom: 10px;
+  padding: 4px;
   border-radius: 4px;
   text-align: center;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .image-container img {
-  max-width: 100%;
-  border-radius: 4px;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;   /* keeps images nicely cropped */
+  border-radius: 3px;
 }
 
 .image-container p {
-  margin: 5px 0 0;
-  font-size: 9px;
+  margin: 2px 0 0;
+  font-size: 8px;
   color: #5D536B;
+  line-height: 1;
 }
 
 .drawbox-tools input[type="range"] {
