@@ -46,9 +46,53 @@ document.getElementById("brushSize").addEventListener("input", function () {
   stroke_width = this.value;
 });
 
-document.getElementById("colorPicker").addEventListener("input", function () {
-  stroke_color = this.value;
+const colorArea = document.getElementById("colorArea");
+const huePicker = document.getElementById("huePicker");
+const colorContext = colorArea.getContext("2d");
+
+let selectedHue = 330;
+
+function drawColorArea() {
+  const hueColor = `hsl(${selectedHue}, 100%, 50%)`;
+
+  colorContext.fillStyle = hueColor;
+  colorContext.fillRect(0, 0, colorArea.width, colorArea.height);
+
+  const whiteGradient = colorContext.createLinearGradient(0, 0, colorArea.width, 0);
+  whiteGradient.addColorStop(0, "#fff");
+  whiteGradient.addColorStop(1, "transparent");
+  colorContext.fillStyle = whiteGradient;
+  colorContext.fillRect(0, 0, colorArea.width, colorArea.height);
+
+  const blackGradient = colorContext.createLinearGradient(0, 0, 0, colorArea.height);
+  blackGradient.addColorStop(0, "transparent");
+  blackGradient.addColorStop(1, "#000");
+  colorContext.fillStyle = blackGradient;
+  colorContext.fillRect(0, 0, colorArea.width, colorArea.height);
+}
+
+function updateColor(event) {
+  const rect = colorArea.getBoundingClientRect();
+  const x = Math.max(0, Math.min(event.clientX - rect.left, rect.width));
+  const y = Math.max(0, Math.min(event.clientY - rect.top, rect.height));
+
+  const saturation = (x / rect.width) * 100;
+  const lightness = 50 - ((y / rect.height) * 50);
+
+  stroke_color = `hsl(${selectedHue}, ${saturation}%, ${lightness}%)`;
+}
+
+colorArea.addEventListener("pointerdown", updateColor);
+colorArea.addEventListener("pointermove", (event) => {
+  if (event.buttons) updateColor(event);
 });
+
+huePicker.addEventListener("input", () => {
+  selectedHue = huePicker.value;
+  drawColorArea();
+});
+
+drawColorArea();
 
 function stop(event) {
   if (!is_drawing) return;
