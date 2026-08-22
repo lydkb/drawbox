@@ -139,7 +139,7 @@ document.getElementById("submit").addEventListener("click", async function () {
 const googleForm = document.createElement("form");
 googleForm.method = "POST";
 googleForm.action = GOOGLE_FORM_URL;
-googleForm.target = "google-form-frame";
+googleForm.target = "_blank";
 googleForm.style.display = "none";
 
 const imageField = document.createElement("input");
