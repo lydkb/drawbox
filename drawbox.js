@@ -105,7 +105,6 @@ function Clear() {
 document.getElementById("undoBtn").addEventListener("click", Restore);
 document.getElementById("clearBtn").addEventListener("click", Clear);
 
-
 document.getElementById("submit").addEventListener("click", function () {
   const submitButton = document.getElementById("submit");
   const statusText = document.getElementById("status");
@@ -169,8 +168,6 @@ document.getElementById("submit").addEventListener("click", function () {
     }
   }, "image/png");
 });
-
-
 
 async function fetchImages() {
   if (!DISPLAY_IMAGES) return;
