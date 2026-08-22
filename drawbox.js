@@ -1,16 +1,16 @@
-const GOOGLE_FORM_ID = "1FAIpQLSer07GoDctcl7Y4Kp4H-mFe6AJvh4yG-_ywXzySv_Up2siKeg";
-const ENTRY_ID = "entry.1218245555";
+const GOOGLE_FORM_ID = "1FAIpQLSeX9Om6Wpaxin9X2MrWX_q336mqdYN9py0IhMzccI-ORbUvnA";
+const ENTRY_ID = "entry.927975880";
 const GOOGLE_SHEET_ID = "1h9xmNff5B318N9-5XR2YbQV0VGBgp5OqPvxjnG-mPVc";
 const DISPLAY_IMAGES = true; 
 
 const CLIENT_ID = "b4fb95e0edc434c"; 
-const GOOGLE_SHEET_URL = `https://google.com{GOOGLE_SHEET_ID}/export?format=csv`;
-const GOOGLE_FORM_URL = `https://google.com{GOOGLE_FORM_ID}/formResponse`;
+const GOOGLE_SHEET_URL = `https://docs.google.com/spreadsheets/d/${GOOGLE_SHEET_ID}/export?format=csv`;
+const GOOGLE_FORM_URL = `https://docs.google.com/forms/d/e/${GOOGLE_FORM_ID}/formResponse`;
 
 let canvas = document.getElementById("drawboxcanvas");
 let context = canvas.getContext("2d");
 
-context.fillStyle = "white";        
+context.fillStyle = "white";
 context.fillRect(0, 0, canvas.width, canvas.height);
 
 let restore_array = [];
@@ -19,6 +19,7 @@ let start_index = -1;
 let stroke_color = "#5D536B";  
 let stroke_width = 4;     
 let is_drawing = false;
+
 
 function start(event) {
   is_drawing = true;
@@ -29,14 +30,17 @@ function start(event) {
 
 function draw(event) {
   if (!is_drawing) return;
+
   context.lineTo(getX(event), getY(event));
   context.strokeStyle = stroke_color;
   context.lineWidth = stroke_width;
   context.lineCap = "round";
   context.lineJoin = "round";
   context.stroke();
+
   event.preventDefault();
 }
+
 
 document.getElementById("brushSize").addEventListener("input", function () {
   stroke_width = this.value;
@@ -48,11 +52,14 @@ document.getElementById("colorPicker").addEventListener("input", function () {
 
 function stop(event) {
   if (!is_drawing) return;
+
   context.stroke();
   context.closePath();
   is_drawing = false;
+
   restore_array.push(context.getImageData(0, 0, canvas.width, canvas.height));
   start_index++;
+
   event.preventDefault();
 }
 
@@ -75,6 +82,7 @@ canvas.addEventListener("touchstart", start, { passive: false });
 canvas.addEventListener("touchmove", draw, { passive: false });
 canvas.addEventListener("touchend", stop, { passive: false });
 
+
 function Restore() {
   if (start_index <= 0) {
     Clear();
@@ -89,12 +97,14 @@ function Clear() {
   context.fillStyle = "white";
   context.clearRect(0, 0, canvas.width, canvas.height);
   context.fillRect(0, 0, canvas.width, canvas.height);
+
   restore_array = [];
   start_index = -1;
 }
 
 document.getElementById("undoBtn").addEventListener("click", Restore);
 document.getElementById("clearBtn").addEventListener("click", Clear);
+
 
 document.getElementById("submit").addEventListener("click", async function () {
   const submitButton = document.getElementById("submit");
@@ -103,17 +113,17 @@ document.getElementById("submit").addEventListener("click", async function () {
   submitButton.disabled = true;
   statusText.textContent = "Uploading...";
 
-  const imageData = canvas.toDataURL("image/png");
+  const imageData = canvas.toToDataURL? canvas.toDataURL("image/png") : canvas.toDataURL("image/png");
+  const blob = await (await fetch(imageData)).blob();
 
-  const imgurFormData = new FormData();
-  imgurFormData.append("image", imageData.split(',')[1]);
-  imgurFormData.append("type", "base64");
+  const formData = new FormData();
+  formData.append("image", blob, "drawing.png");
 
   try {
-    const response = await fetch("https://imgur.com", {
+    const response = await fetch("https://api.imgur.com/3/image", {
       method: "POST",
       headers: { Authorization: `Client-ID ${CLIENT_ID}` },
-      body: imgurFormData, 
+      body: formData,
     });
 
     const data = await response.json();
@@ -127,7 +137,7 @@ document.getElementById("submit").addEventListener("click", async function () {
     await fetch(GOOGLE_FORM_URL, {
       method: "POST",
       body: googleFormData,
-      mode: "no-cors", 
+      mode: "no-cors",
     });
 
     statusText.textContent = "Upload successful!";
@@ -137,7 +147,7 @@ document.getElementById("submit").addEventListener("click", async function () {
   } catch (error) {
     console.error(error);
     statusText.textContent = "Error uploading.";
-    alert("Upload failed. Check your browser console for details.");
+    alert("Upload failed.");
   } finally {
     submitButton.disabled = false;
   }
