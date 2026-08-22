@@ -8,7 +8,7 @@ const GOOGLE_SHEET_URL = `https://docs.google.com/spreadsheets/d/${GOOGLE_SHEET_
 const GOOGLE_FORM_URL = `https://docs.google.com/forms/d/e/${GOOGLE_FORM_ID}/formResponse`;
 
 let canvas = document.getElementById("drawboxcanvas");
-let context = canvas.getContext("2d");
+let context = canvas.getContext("2d", { willReadFrequently: true });
 
 context.fillStyle = "white";
 context.fillRect(0, 0, canvas.width, canvas.height);
