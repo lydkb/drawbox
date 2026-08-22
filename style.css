@@ -208,6 +208,7 @@ s { color: #FFB8DD; text-decoration: none; }
   height: 120px;
   border: 1px dotted #AFA3C0;
   cursor: crosshair;
+  touch-action: none;
 }
 
 #huePicker {
@@ -216,9 +217,6 @@ s { color: #FFB8DD; text-decoration: none; }
   margin-top: 6px;
 }
 
-#colorArea {
-  touch-action: none;
-}
 .drawbox-canvas-frame {
   width: min(400px, 100%);
   box-sizing: border-box;
