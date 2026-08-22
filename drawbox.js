@@ -64,12 +64,15 @@ function drawColorArea() {
   colorContext.fillStyle = whiteGradient;
   colorContext.fillRect(0, 0, colorArea.width, colorArea.height);
 
-  const blackGradient = colorContext.createLinearGradient(0, 0, 0, colorArea.height);
-  blackGradient.addColorStop(0, "transparent");
-  blackGradient.addColorStop(1, "#000");
-  colorContext.fillStyle = blackGradient;
-  colorContext.fillRect(0, 0, colorArea.width, colorArea.height);
-}
+const blackGradient = colorContext.createLinearGradient(
+  0, 0, 0, colorArea.height
+);
+
+blackGradient.addColorStop(0, "rgba(0, 0, 0, 0)");
+blackGradient.addColorStop(1, "rgba(0, 0, 0, 0.35)");
+
+colorContext.fillStyle = blackGradient;
+colorContext.fillRect(0, 0, colorArea.width, colorArea.height);
 
 function updateColor(event) {
   const rect = colorArea.getBoundingClientRect();
