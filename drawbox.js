@@ -4,8 +4,8 @@ const GOOGLE_SHEET_ID = "1h9xmNff5B318N9-5XR2YbQV0VGBgp5OqPvxjnG-mPVc";
 const DISPLAY_IMAGES = true; 
 
 const CLIENT_ID = "b4fb95e0edc434c"; 
-const GOOGLE_SHEET_URL = `https://docs.google.com/spreadsheets/d/${GOOGLE_SHEET_ID}/export?format=csv`;
-const GOOGLE_FORM_URL = `https://docs.google.com/forms/d/e/${GOOGLE_FORM_ID}/formResponse`;
+const GOOGLE_SHEET_URL = `https://google.com{GOOGLE_SHEET_ID}/export?format=csv`;
+const GOOGLE_FORM_URL = `https://google.com{GOOGLE_FORM_ID}/formResponse`;
 
 let canvas = document.getElementById("drawboxcanvas");
 let context = canvas.getContext("2d");
@@ -123,11 +123,12 @@ document.getElementById("submit").addEventListener("click", function () {
     formData.append("image", blob, "drawing.png");
 
     try {
-      const response = await fetch("https://imgur.com", {
+      const response = await fetch("https://api.imgur.com/3/image", {
         method: "POST",
         headers: { Authorization: `Client-ID ${CLIENT_ID}` },
         body: formData,
       });
+
 
       if (!response.ok) throw new Error(`Imgur error status: ${response.status}`);
 
