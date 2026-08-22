@@ -2,16 +2,16 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Security-Policy"
 content="
 default-src 'self';
-connect-src 'self' data: https://api.imgur.com https://i.imgur.com https://imgur.com https://google.com https://*.google.com https://*.googleusercontent.com;
+connect-src 'self' https://api.imgur.com https://i.imgur.com https://imgur.com https://docs.google.com https://*.google.com https://*.googleusercontent.com;
 img-src 'self' data: https://i.imgur.com https://imgur.com https://neocities.org https://*.googleusercontent.com;
-style-src 'self' 'unsafe-inline' https://cursors-4u.net https://*.cursors-4u.net https://cdnfonts.com https://*.cdnfonts.com;
-font-src 'self' https://cdnfonts.com https://*.cdnfonts.com;
+style-src 'self' 'unsafe-inline' https://cursors-4u.net https://cdnfonts.com;
+font-src 'self' https://cdnfonts.com;
 ">
-<title>LydKB [drawbox]</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LydKB [links]</title>
 <link rel="shortcut icon" href="https://i.imgur.com/eIKac7n.gif"> 
 <link rel="stylesheet" href="https://cdn.cursors-4u.net/cursors/animated/cute-ears-doll-girl-9aaba74d-32.css">
 <link rel="preconnect" href="https://fonts.cdnfonts.com">
@@ -20,31 +20,34 @@ font-src 'self' https://cdnfonts.com https://*.cdnfonts.com;
 </head>
 <body class="iframe-body">
     
-  <div class="box-window drawbox-wrapper">
+    
+    <div class="box-window drawbox-wrapper" >
 
-    <div class="drawbox-tools">
-      <label>Brush Size</label>
-      <input type="range" id="brushSize" min="1" max="40" value="4">
+  <div class="drawbox-tools">
+    <label>Brush Size</label>
+    <input type="range" id="brushSize" min="1" max="40">
 
-      <label>Colour</label>
-      <input type="color" id="colorPicker" value="#5D536B">
+    <label>Colour</label>
+    <input type="color" id="colorPicker" value="#5D536B">
 
-      <button id="undoBtn">Undo</button>
-      <button id="clearBtn">Clear</button>
-      <button id="submit">Submit</button>
-      <span id="status"></span>
+    <button id="undoBtn">Undo</button>
+    <button id="clearBtn">Clear</button>
+    <button id="submit">Submit</button>
+    <span id="status"></span>
       please keep it family friendly ! ^-^;
-    </div>
-
-    <div class="drawbox-canvas-frame">
-      <canvas id="drawboxcanvas" width="400" height="400"></canvas>
-    </div>
-
-    <div id="gallery" class="drawbox-gallery">Loading images...</div>
-
   </div>
 
+  <div class="drawbox-canvas-frame">
+    <canvas id="drawboxcanvas" width="400" height="400"></canvas>
+  </div>
+
+  <div id="gallery" class="drawbox-gallery">Loading images...</div>
+
+</div>
+
+    
+    
 </body>
-<script src="drawbox.js" defer></script>
-<script src="heartsw.js"></script>
+    <script src="drawbox.js" defer></script>
+    <script src="heartsw.js"></script>
 </html>
