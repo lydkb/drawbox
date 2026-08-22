@@ -113,8 +113,9 @@ document.getElementById("submit").addEventListener("click", async function () {
   submitButton.disabled = true;
   statusText.textContent = "Uploading...";
 
-  const imageData = canvas.toToDataURL? canvas.toDataURL("image/png") : canvas.toDataURL("image/png");
-  const blob = await (await fetch(imageData)).blob();
+ const imageData = canvas.toDataURL("image/png");
+ const blob = await (await fetch(imageData)).blob();
+
 
   const formData = new FormData();
   formData.append("image", blob, "drawing.png");
