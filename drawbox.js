@@ -114,7 +114,7 @@ document.getElementById("submit").addEventListener("click", function () {
 
   canvas.toBlob(async function (blob) {
     if (!blob) {
-      statusText.textContent = "Error converting drawing.";
+      statusText.textContent = "Error processing image.";
       submitButton.disabled = false;
       return;
     }
@@ -129,33 +129,29 @@ document.getElementById("submit").addEventListener("click", function () {
         body: formData,
       });
 
-      if (!response.ok) {
-        throw new Error(`Imgur Server Error: ${response.status}`);
-      }
+      if (!response.ok) throw new Error(`Imgur error status: ${response.status}`);
 
       const data = await response.json();
-      if (!data.success) {
-        throw new Error("Imgur API failed to return success.");
-      }
+      if (!data.success) throw new Error("Imgur upload failed");
 
       const imageUrl = data.data.link;
 
-      const googleFormData = new URLSearchParams();
+      const googleFormData = new FormData();
       googleFormData.append(ENTRY_ID, imageUrl);
 
       await fetch(GOOGLE_FORM_URL, {
         method: "POST",
-        mode: "no-cors", 
-        body: googleFormData, 
+        body: googleFormData,
+        mode: "no-cors",
       });
 
       statusText.textContent = "Upload successful!";
-      alert("Image uploaded successfully!");
+      alert("Image uploaded!");
       location.reload();
 
     } catch (error) {
-      console.error("Upload process crashed:", error);
-      statusText.textContent = `Error: ${error.message}`;
+      console.error(error);
+      statusText.textContent = "Error uploading.";
       alert(`Upload failed: ${error.message}`);
     } finally {
       submitButton.disabled = false;
@@ -163,14 +159,13 @@ document.getElementById("submit").addEventListener("click", function () {
   }, "image/png");
 });
 
-
 async function fetchImages() {
   if (!DISPLAY_IMAGES) return;
   try {
     const response = await fetch(GOOGLE_SHEET_URL);
     const csvText = await response.text();
     
-    const rows = csvText.split("\n").slice(1);
+    const rows = csvText.split(/\r?\n/).slice(1);
     const gallery = document.getElementById("gallery");
     gallery.innerHTML = "";
 
