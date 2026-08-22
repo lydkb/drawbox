@@ -142,7 +142,6 @@ document.getElementById("submit").addEventListener("click", async function () {
     submitButton.disabled = false;
   }
 });
-
 async function fetchImages() {
   if (!DISPLAY_IMAGES) return;
   try {
@@ -172,4 +171,5 @@ async function fetchImages() {
     document.getElementById("gallery").textContent = "Failed to load images.";
   }
 }
+
 fetchImages();
