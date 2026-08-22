@@ -141,6 +141,7 @@ colorPickerPopup.addEventListener("click", (event) => {
 document.addEventListener("click", () => {
   colorPickerPopup.hidden = true;
 });
+
 const pickCanvasColor = document.getElementById("pickCanvasColor");
 let pickingCanvasColor = false;
 
@@ -225,7 +226,6 @@ function Clear() {
 }
 
 document.getElementById("undoBtn").addEventListener("click", Restore);
-document.getElementById("clearBtn").addEventListener("click", Clear);
 
 
 document.getElementById("submit").addEventListener("click", async function () {
