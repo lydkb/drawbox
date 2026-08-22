@@ -123,7 +123,11 @@ document.getElementById("submit").addEventListener("click", async function () {
   try {
     const response = await fetch("https://api.imgur.com/3/image", {
       method: "POST",
-      headers: { Authorization: `Client-ID ${CLIENT_ID}` },
+      headers: {
+      Authorization: `Client-ID ${CLIENT_ID}`,
+      Accept: "application/json"
+    },
+
       body: formData,
     });
 
