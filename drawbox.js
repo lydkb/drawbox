@@ -73,16 +73,22 @@ function drawColorArea() {
 
 function updateColor(event) {
   const rect = colorArea.getBoundingClientRect();
+
   const x = Math.max(0, Math.min(event.clientX - rect.left, rect.width));
   const y = Math.max(0, Math.min(event.clientY - rect.top, rect.height));
 
   const saturation = (x / rect.width) * 100;
-  const lightness = 50 - ((y / rect.height) * 50);
+  const lightness = 50 - (y / rect.height) * 50;
 
   stroke_color = `hsl(${selectedHue}, ${saturation}%, ${lightness}%)`;
+  colorPickerButton.style.backgroundColor = stroke_color;
 }
 
-colorArea.addEventListener("pointerdown", updateColor);
+colorArea.addEventListener("pointerdown", (event) => {
+  colorArea.setPointerCapture(event.pointerId);
+  updateColor(event);
+});
+
 colorArea.addEventListener("pointermove", (event) => {
   if (event.buttons) updateColor(event);
 });
