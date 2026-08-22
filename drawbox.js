@@ -22,6 +22,12 @@ let is_drawing = false;
 
 
 function start(event) {
+  if (pickingCanvasColor) {
+    pickColorFromCanvas(event);
+    event.preventDefault();
+    return;
+  }
+
   is_drawing = true;
   context.beginPath();
   context.moveTo(getX(event), getY(event));
@@ -75,6 +81,23 @@ colorContext.fillStyle = blackGradient;
 colorContext.fillRect(0, 0, colorArea.width, colorArea.height);
 }
 
+function hsvToHsl(h, s, v) {
+  s /= 100;
+  v /= 100;
+
+  const lightness = v * (1 - s / 2);
+  const hslS =
+    lightness === 0 || lightness === 1
+      ? 0
+      : (v - lightness) / Math.min(lightness, 1 - lightness);
+
+  return {
+    h,
+    s: hslS * 100,
+    l: lightness * 100
+  };
+}
+
 function updateColor(event) {
   const rect = colorArea.getBoundingClientRect();
 
@@ -82,9 +105,11 @@ function updateColor(event) {
   const y = Math.max(0, Math.min(event.clientY - rect.top, rect.height));
 
   const saturation = (x / rect.width) * 100;
-  const lightness = 50 - (y / rect.height) * 50;
+  const value = 100 - (y / rect.height) * 100;
 
-  stroke_color = `hsl(${selectedHue}, ${saturation}%, ${lightness}%)`;
+  const color = hsvToHsl(selectedHue, saturation, value);
+  stroke_color = `hsl(${color.h}, ${color.s}%, ${color.l}%)`;
+
   colorPickerButton.style.backgroundColor = stroke_color;
 }
 
@@ -116,6 +141,33 @@ colorPickerPopup.addEventListener("click", (event) => {
 document.addEventListener("click", () => {
   colorPickerPopup.hidden = true;
 });
+const pickCanvasColor = document.getElementById("pickCanvasColor");
+let pickingCanvasColor = false;
+
+pickCanvasColor.addEventListener("click", (event) => {
+  event.stopPropagation();
+  pickingCanvasColor = true;
+  colorPickerPopup.hidden = true;
+  document.getElementById("status").textContent =
+    "Click a colour on your drawing.";
+});
+
+function rgbToHex(red, green, blue) {
+  return "#" + [red, green, blue]
+    .map(value => value.toString(16).padStart(2, "0"))
+    .join("");
+}
+
+function pickColorFromCanvas(event) {
+  const x = Math.floor(getX(event));
+  const y = Math.floor(getY(event));
+  const pixel = context.getImageData(x, y, 1, 1).data;
+
+  stroke_color = rgbToHex(pixel[0], pixel[1], pixel[2]);
+  colorPickerButton.style.backgroundColor = stroke_color;
+  document.getElementById("status").textContent = "";
+  pickingCanvasColor = false;
+}
 drawColorArea();
 
 function stop(event) {
