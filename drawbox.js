@@ -4,8 +4,8 @@ const GOOGLE_SHEET_ID = "1h9xmNff5B318N9-5XR2YbQV0VGBgp5OqPvxjnG-mPVc";
 const DISPLAY_IMAGES = true; 
 
 const CLIENT_ID = "b4fb95e0edc434c"; 
-const GOOGLE_SHEET_URL = `https://docs.google.com/spreadsheets/d/${GOOGLE_SHEET_ID}/export?format=csv`;
-const GOOGLE_FORM_URL = `https://docs.google.com/forms/d/e/${GOOGLE_FORM_ID}/formResponse`;
+const GOOGLE_SHEET_URL = `https://google.com{GOOGLE_SHEET_ID}/export?format=csv`;
+const GOOGLE_FORM_URL = `https://google.com{GOOGLE_FORM_ID}/formResponse`;
 
 let canvas = document.getElementById("drawboxcanvas");
 let context = canvas.getContext("2d");
@@ -141,7 +141,7 @@ document.getElementById("submit").addEventListener("click", function () {
 
       await fetch(GOOGLE_FORM_URL, {
         method: "POST",
-        body: googleFormData,
+        body: googleFormData.toString(), 
         mode: "no-cors",
       });
 
@@ -167,7 +167,6 @@ async function fetchImages() {
     
     const gallery = document.getElementById("gallery");
     gallery.innerHTML = "";
-
     gallery.classList.add("gallery");
 
     const rows = csvText.split(/\r?\n/).slice(1);
@@ -182,7 +181,6 @@ async function fetchImages() {
       if (imgUrl.startsWith("http")) {
         const div = document.createElement("div");
         div.classList.add("item", "image-container");
-        
         div.innerHTML = `<img src="${imgUrl}" alt="drawing" class="thumb"><p>${timestamp}</p>`;
         gallery.appendChild(div);
       }
