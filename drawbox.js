@@ -4,8 +4,8 @@ const GOOGLE_SHEET_ID = "1h9xmNff5B318N9-5XR2YbQV0VGBgp5OqPvxjnG-mPVc";
 const DISPLAY_IMAGES = true; 
 
 const CLIENT_ID = "b4fb95e0edc434c"; 
-const GOOGLE_SHEET_URL = `https://google.com{GOOGLE_SHEET_ID}/export?format=csv`;
-const GOOGLE_FORM_URL = `https://google.com{GOOGLE_FORM_ID}/formResponse`;
+const GOOGLE_SHEET_URL = `https://docs.google.com/spreadsheets/d/${GOOGLE_SHEET_ID}/export?format=csv`;
+const GOOGLE_FORM_URL = `https://docs.google.com/forms/d/e/${GOOGLE_FORM_ID}/formResponse`;
 
 let canvas = document.getElementById("drawboxcanvas");
 let context = canvas.getContext("2d");
@@ -105,58 +105,53 @@ function Clear() {
 document.getElementById("undoBtn").addEventListener("click", Restore);
 document.getElementById("clearBtn").addEventListener("click", Clear);
 
-document.getElementById("submit").addEventListener("click", function () {
+
+document.getElementById("submit").addEventListener("click", async function () {
   const submitButton = document.getElementById("submit");
   const statusText = document.getElementById("status");
 
   submitButton.disabled = true;
   statusText.textContent = "Uploading...";
 
-  canvas.toBlob(async function (blob) {
-    if (!blob) {
-      statusText.textContent = "Error processing image.";
-      submitButton.disabled = false;
-      return;
-    }
+ const imageData = canvas.toDataURL("image/png");
+ const blob = await (await fetch(imageData)).blob();
 
-    const formData = new FormData();
-    formData.append("image", blob, "drawing.png");
 
-    try {
-      const response = await fetch("https://api.imgur.com/3/image", {
-        method: "POST",
-        headers: { Authorization: `Client-ID ${CLIENT_ID}` },
-        body: formData,
-      });
+  const formData = new FormData();
+  formData.append("image", blob, "drawing.png");
 
-      if (!response.ok) throw new Error(`Imgur error status: ${response.status}`);
+  try {
+    const response = await fetch("https://api.imgur.com/3/image", {
+      method: "POST",
+      headers: { Authorization: `Client-ID ${CLIENT_ID}` },
+      body: formData,
+    });
 
-      const data = await response.json();
-      if (!data.success) throw new Error("Imgur upload failed");
+    const data = await response.json();
+    if (!data.success) throw new Error("Imgur upload failed");
 
-      const imageUrl = data.data.link;
+    const imageUrl = data.data.link;
 
-      const googleFormData = new URLSearchParams();
-      googleFormData.append(ENTRY_ID, imageUrl);
+    const googleFormData = new FormData();
+    googleFormData.append(ENTRY_ID, imageUrl);
 
-      await fetch(GOOGLE_FORM_URL, {
-        method: "POST",
-        body: googleFormData.toString(), 
-        mode: "no-cors",
-      });
+    await fetch(GOOGLE_FORM_URL, {
+      method: "POST",
+      body: googleFormData,
+      mode: "no-cors",
+    });
 
-      statusText.textContent = "Upload successful!";
-      alert("Image uploaded!");
-      location.reload();
+    statusText.textContent = "Upload successful!";
+    alert("Image uploaded!");
+    location.reload();
 
-    } catch (error) {
-      console.error(error);
-      statusText.textContent = "Error uploading.";
-      alert(`Upload failed: ${error.message}`);
-    } finally {
-      submitButton.disabled = false;
-    }
-  }, "image/png");
+  } catch (error) {
+    console.error(error);
+    statusText.textContent = "Error uploading.";
+    alert("Upload failed.");
+  } finally {
+    submitButton.disabled = false;
+  }
 });
 
 async function fetchImages() {
@@ -165,11 +160,9 @@ async function fetchImages() {
     const response = await fetch(GOOGLE_SHEET_URL);
     const csvText = await response.text();
     
+    const rows = csvText.split("\n").slice(1);
     const gallery = document.getElementById("gallery");
     gallery.innerHTML = "";
-    gallery.classList.add("gallery");
-
-    const rows = csvText.split(/\r?\n/).slice(1);
 
     rows.reverse().forEach((row) => {
       const columns = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
@@ -180,8 +173,8 @@ async function fetchImages() {
 
       if (imgUrl.startsWith("http")) {
         const div = document.createElement("div");
-        div.classList.add("item", "image-container");
-        div.innerHTML = `<img src="${imgUrl}" alt="drawing" class="thumb"><p>${timestamp}</p>`;
+        div.classList.add("image-container");
+        div.innerHTML = `<img src="${imgUrl}" alt="drawing"><p>${timestamp}</p>`;
         gallery.appendChild(div);
       }
     });
