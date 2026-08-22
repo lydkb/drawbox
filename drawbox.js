@@ -113,14 +113,13 @@ document.getElementById("submit").addEventListener("click", async function () {
   submitButton.disabled = true;
   statusText.textContent = "Uploading...";
 
-  const imageData = canvas.toDataURL("image/png");
-  const blob = await (await fetch(imageData)).blob();
-
-  const formData = new FormData();
-  formData.append("image", blob, "drawing.png");
-
   try {
-    // ...existing code...
+    const blob = await new Promise((resolve) => {
+      canvas.toBlob(resolve, "image/png");
+    });
+
+    const formData = new FormData();
+    formData.append("image", blob, "drawing.png");
 
     const response = await fetch("https://api.imgur.com/3/image", {
       method: "POST",
@@ -134,15 +133,11 @@ document.getElementById("submit").addEventListener("click", async function () {
     const data = await response.json();
 
     if (!response.ok || !data.success) {
-      console.error("Imgur response:", data);
       throw new Error(data?.data?.error || "Imgur upload failed");
     }
 
-    const imageUrl = data.data.link;
-    console.log("Uploaded image:", imageUrl);
-
     const googleFormData = new FormData();
-    googleFormData.append(ENTRY_ID, imageUrl);
+    googleFormData.append(ENTRY_ID, data.data.link);
 
     await fetch(GOOGLE_FORM_URL, {
       method: "POST",
@@ -153,12 +148,10 @@ document.getElementById("submit").addEventListener("click", async function () {
     statusText.textContent = "Upload successful!";
     alert("Image uploaded!");
     location.reload();
-
-// ...existing code...=
   } catch (error) {
-    console.error(error);
+    console.error("Upload error:", error);
     statusText.textContent = "Error uploading.";
-    alert("Upload failed.");
+    alert(`Upload failed: ${error.message}`);
   } finally {
     submitButton.disabled = false;
   }
