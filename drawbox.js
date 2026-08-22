@@ -94,14 +94,17 @@ huePicker.addEventListener("input", () => {
 const colorPickerButton = document.getElementById("colorPickerButton");
 const colorPickerPopup = document.getElementById("colorPickerPopup");
 
-colorPickerButton.addEventListener("click", () => {
+colorPickerButton.addEventListener("click", (event) => {
+  event.stopPropagation();
   colorPickerPopup.hidden = !colorPickerPopup.hidden;
 });
 
-document.addEventListener("pointerdown", (event) => {
-  if (!event.target.closest(".color-picker")) {
-    colorPickerPopup.hidden = true;
-  }
+colorPickerPopup.addEventListener("click", (event) => {
+  event.stopPropagation();
+});
+
+document.addEventListener("click", () => {
+  colorPickerPopup.hidden = true;
 });
 drawColorArea();
 
