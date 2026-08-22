@@ -136,14 +136,23 @@ document.getElementById("submit").addEventListener("click", async function () {
       throw new Error(data?.data?.error || "Imgur upload failed");
     }
 
-    const googleFormData = new FormData();
-    googleFormData.append(ENTRY_ID, data.data.link);
+const googleForm = document.createElement("form");
+googleForm.method = "POST";
+googleForm.action = GOOGLE_FORM_URL;
+googleForm.target = "google-form-frame";
+googleForm.style.display = "none";
 
-    await fetch(GOOGLE_FORM_URL, {
-      method: "POST",
-      body: googleFormData,
-      mode: "no-cors"
-    });
+const imageField = document.createElement("input");
+imageField.type = "hidden";
+imageField.name = ENTRY_ID;
+imageField.value = data.data.link;
+
+googleForm.appendChild(imageField);
+document.body.appendChild(googleForm);
+googleForm.submit();
+
+await new Promise(resolve => setTimeout(resolve, 1000));
+googleForm.remove();
 
     statusText.textContent = "Upload successful!";
     alert("Image uploaded!");
