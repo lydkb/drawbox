@@ -136,7 +136,7 @@ document.getElementById("submit").addEventListener("click", function () {
 
       const imageUrl = data.data.link;
 
-      const googleFormData = new FormData();
+      const googleFormData = new URLSearchParams();
       googleFormData.append(ENTRY_ID, imageUrl);
 
       await fetch(GOOGLE_FORM_URL, {
