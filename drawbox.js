@@ -124,7 +124,8 @@ document.getElementById("submit").addEventListener("click", function () {
     formData.append("image", blob, "drawing.png");
 
     try {
-      const response = await fetch("https://api.imgur.com/3/image", {
+      
+      const response = await fetch("https://imgur.com", {
         method: "POST",
         headers: { Authorization: `Client-ID ${CLIENT_ID}` },
         body: formData,
@@ -141,13 +142,18 @@ document.getElementById("submit").addEventListener("click", function () {
 
       const imageUrl = data.data.link;
 
-      const googleFormData = new FormData();
+      
+      const googleFormData = new URLSearchParams();
       googleFormData.append(ENTRY_ID, imageUrl);
 
+      
       await fetch(GOOGLE_FORM_URL, {
         method: "POST",
-        body: googleFormData,
         mode: "no-cors", 
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: googleFormData.toString(), 
       });
 
       statusText.textContent = "Upload successful!";
@@ -163,6 +169,7 @@ document.getElementById("submit").addEventListener("click", function () {
     }
   }, "image/png");
 });
+
 
 
 async function fetchImages() {
