@@ -113,9 +113,8 @@ document.getElementById("submit").addEventListener("click", async function () {
   submitButton.disabled = true;
   statusText.textContent = "Uploading...";
 
- const imageData = canvas.toDataURL("image/png");
- const blob = await (await fetch(imageData)).blob();
-
+  const imageData = canvas.toDataURL("image/png");
+  const blob = await (await fetch(imageData)).blob();
 
   const formData = new FormData();
   formData.append("image", blob, "drawing.png");
@@ -160,7 +159,7 @@ async function fetchImages() {
     const response = await fetch(GOOGLE_SHEET_URL);
     const csvText = await response.text();
     
-    const rows = csvText.split("\n").slice(1);
+    const rows = csvText.split(/\r?\n/).slice(1);
     const gallery = document.getElementById("gallery");
     gallery.innerHTML = "";
 
