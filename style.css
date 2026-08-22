@@ -205,11 +205,9 @@ s { color: #FFB8DD; text-decoration: none; }
 #colorArea {
   display: block;
   width: 180px;
-  height: 180px;
+  height: 120px;
   border: 1px dotted #AFA3C0;
-  border-radius: 50%;
   cursor: crosshair;
-  touch-action: none;
 }
 
 #huePicker {
