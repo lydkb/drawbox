@@ -68,11 +68,28 @@ function drawColorArea() {
   0, 0, 0, colorArea.height
 );
 
-blackGradient.addColorStop(0, "rgba(0, 0, 0, 0)");
-blackGradient.addColorStop(1, "rgba(0, 0, 0, 0.35)");
+blackGradient.addColorStop(0, "transparent");
+blackGradient.addColorStop(1, "#000");
 
 colorContext.fillStyle = blackGradient;
 colorContext.fillRect(0, 0, colorArea.width, colorArea.height);
+}
+
+function hsvToHsl(h, s, v) {
+  s /= 100;
+  v /= 100;
+
+  const lightness = v * (1 - s / 2);
+  const hslS =
+    lightness === 0 || lightness === 1
+      ? 0
+      : (v - lightness) / Math.min(lightness, 1 - lightness);
+
+  return {
+    h,
+    s: hslS * 100,
+    l: lightness * 100
+  };
 }
 
 function updateColor(event) {
@@ -82,9 +99,11 @@ function updateColor(event) {
   const y = Math.max(0, Math.min(event.clientY - rect.top, rect.height));
 
   const saturation = (x / rect.width) * 100;
-  const lightness = 50 - (y / rect.height) * 50;
+  const value = 100 - (y / rect.height) * 100;
 
-  stroke_color = `hsl(${selectedHue}, ${saturation}%, ${lightness}%)`;
+  const color = hsvToHsl(selectedHue, saturation, value);
+  stroke_color = `hsl(${color.h}, ${color.s}%, ${color.l}%)`;
+
   colorPickerButton.style.backgroundColor = stroke_color;
 }
 
