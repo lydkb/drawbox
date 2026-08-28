@@ -111,12 +111,12 @@ s { color: #FFB8DD; text-decoration: none; }
   padding: 10px;
   border-radius: 4px;
   box-shadow: inset 1px 1px 0 #FFF;
-
-  display: flex;
-  flex-wrap: nowrap;
+  display: grid;
+  grid-template-columns: 4fr 1fr; 
   gap: 10px;
-  overflow-x: auto;
-  white-space: nowrap;
+  max-height: 300px;
+  overflow-y: auto;
+  overflow-x: hidden;  
 }
 
 .image-container {
@@ -246,5 +246,8 @@ s { color: #FFB8DD; text-decoration: none; }
   #huePicker {
     width: 100%;
     max-width: 180px;
+  }
+  .drawbox-gallery {
+    grid-template-columns: repeat(2, 1fr); 
   }
 }
