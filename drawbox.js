@@ -2,8 +2,7 @@ const GOOGLE_FORM_ID = "1FAIpQLSeX9Om6Wpaxin9X2MrWX_q336mqdYN9py0IhMzccI-ORbUvnA
 const ENTRY_ID = "entry.927975880";
 const GOOGLE_SHEET_ID = "1h9xmNff5B318N9-5XR2YbQV0VGBgp5OqPvxjnG-mPVc";
 const DISPLAY_IMAGES = true; 
-
-const CLIENT_ID = "b4fb95e0edc434c"; 
+const IMGBB_API_KEY = "09ab0e029956fb1ce0dc8e57754a01b9";
 const GOOGLE_SHEET_URL = `https://docs.google.com/spreadsheets/d/${GOOGLE_SHEET_ID}/export?format=csv&gid=435392140`;
 const GOOGLE_FORM_URL = `https://docs.google.com/forms/d/e/${GOOGLE_FORM_ID}/formResponse`;
 
@@ -238,57 +237,64 @@ document.getElementById("submit").addEventListener("click", async function () {
   statusText.textContent = "Uploading...";
 
   try {
-    const blob = await new Promise((resolve) => {
-      canvas.toBlob(resolve, "image/png");
-    });
+const blob = await new Promise((resolve, reject) => {
+  canvas.toBlob((result) => {
+    if (result) resolve(result);
+    else reject(new Error("Could not create image"));
+  }, "image/png");
+});
 
-    const formData = new FormData();
-    formData.append("image", blob, "drawing.png");
+const formData = new FormData();
+formData.append("image", blob, "drawing.png");
 
-    const response = await fetch("https://api.imgur.com/3/image", {
-      method: "POST",
-      headers: {
-        Authorization: `Client-ID ${CLIENT_ID}`,
-        Accept: "application/json"
-      },
-      body: formData
-    });
+const response = await fetch(
+  `https://api.imgbb.com/1/upload?key=${encodeURIComponent(IMGBB_API_KEY)}`,
+  {
+    method: "POST",
+    body: formData
+  }
+);
 
-    const data = await response.json();
+const data = await response.json();
 
-    if (!response.ok || !data.success) {
-      throw new Error(data?.data?.error || "Imgur upload failed");
-    }
+if (!response.ok || !data.success) {
+  throw new Error(data?.error?.message || "ImgBB upload failed");
+}
+
+const imageUrl = data.data.display_url;
 
 const googleForm = document.createElement("form");
-googleForm.method = "POST";
-googleForm.action = GOOGLE_FORM_URL;
-googleForm.target = "google-form-frame";
-googleForm.style.display = "none";
+    googleForm.method = "POST";
+    googleForm.action = GOOGLE_FORM_URL;
+    googleForm.target = "google-form-frame";
+    googleForm.style.display = "none";
 
-const imageField = document.createElement("input");
-imageField.type = "hidden";
-imageField.name = ENTRY_ID;
-imageField.value = data.data.link;
+    const imageField = document.createElement("input");
+    imageField.type = "hidden";
+    imageField.name = ENTRY_ID;
+    imageField.value = imageUrl;
 
-googleForm.appendChild(imageField);
-document.body.appendChild(googleForm);
-googleForm.submit();
+    googleForm.appendChild(imageField);
+    document.body.appendChild(googleForm);
+    googleForm.submit();
 
-await new Promise(resolve => setTimeout(resolve, 1000));
-googleForm.remove();
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    googleForm.remove();
 
     statusText.textContent = "Upload successful!";
     alert("Image uploaded!");
     location.reload();
-  } catch (error) {
+  } 
+  catch (error) {
     console.error("Upload error:", error);
     statusText.textContent = "Error uploading.";
     alert(`Upload failed: ${error.message}`);
-  } finally {
+  } 
+ finally {
     submitButton.disabled = false;
   }
-});
+}); 
+
 
 async function fetchImages() {
   if (!DISPLAY_IMAGES) return;
